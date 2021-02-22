@@ -1016,6 +1016,15 @@ open class RAGTextField: UITextField {
     }
     
     private func normalVerticalPlaceholderConstraintConstant() -> CGFloat {
+        // Original source code
+        //        return computeTopInsetToText() + 0.5 * measureTextHeight()
+        
+        // We want to vertically center the placeholder text instead of having a space on the top of the placeholder text
+        // when there is no value in the text field
+        // When text padding mode is textAndPlaceholder, the centre of the placeholder text will be the half of the background view's height.
+        if (textPaddingMode == .textAndPlaceholder) {
+            return ceil(computeTextBackgroundViewFrame().height / 2)
+        }
         
         return computeTopInsetToText() + 0.5 * measureTextHeight()
     }
