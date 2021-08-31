@@ -529,7 +529,8 @@ open class RAGTextField: UITextField {
     private func commonInit() {
         
         borderStyle = .none
-        
+
+        hintLabel.accessibilityIdentifier = "hintLabel"
         addSubview(hintLabel)
         setupHintLabel()
         
