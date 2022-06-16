@@ -134,6 +134,21 @@ open class UnderlineView: UIView {
             }
         }
     }
+
+    /// Refers to the text field whose editing state is used to update the appearance of the underline automatically.
+    ///
+    /// If `nil`, the appearance of the underline must be updated manually, for example from a view controller or text field delegate.
+    open weak var textView: UITextView? {
+        didSet {
+            if let oldTextView = oldValue {
+                stopObserving(oldTextView)
+            }
+
+            if let newTextView = textView {
+                startObserving(newTextView)
+            }
+        }
+    }
     
     /// The tint color of the `UIView` overwrites the current `expandedLineColor`.
     open override var tintColor: UIColor! {
@@ -179,7 +194,7 @@ open class UnderlineView: UIView {
     
     /// Sets up the underline view. Sets properties and configures constraints.
     private func setUpUnderline() {
-        
+
         underlineView.backgroundColor = foregroundLineColor
         underlineView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -227,6 +242,24 @@ open class UnderlineView: UIView {
                                                selector: #selector(onDidEndEditing(_:)),
                                                name: UITextField.textDidEndEditingNotification,
                                                object: textField)
+    }
+
+    private func stopObserving(_ textView: UITextView) {
+
+        NotificationCenter.default.removeObserver(self, name: UITextView.textDidBeginEditingNotification, object: textView)
+        NotificationCenter.default.removeObserver(self, name: UITextView.textDidEndEditingNotification, object: textView)
+    }
+
+    private func startObserving(_ textView: UITextView) {
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidBeginEditing(_:)),
+                                               name: UITextView.textDidBeginEditingNotification,
+                                               object: textView)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidEndEditing(_:)),
+                                               name: UITextView.textDidEndEditingNotification,
+                                               object: textView)
     }
     
     @objc private func onDidBeginEditing(_ notification: Notification) {

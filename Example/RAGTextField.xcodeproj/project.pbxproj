@@ -32,6 +32,8 @@
 		BFA650162225D3B200FF1FB0 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA650152225D3B200FF1FB0 /* UIColor+Hex.swift */; };
 		BFA650182225D3E600FF1FB0 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA650172225D3E600FF1FB0 /* ColorPalette.swift */; };
 		BFD68C992220A412005CA182 /* KeyboardEvader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD68C982220A412005CA182 /* KeyboardEvader.swift */; };
+		E5AFE4AA28597BB200B460E8 /* UnderlineTextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AFE4A828597BB200B460E8 /* UnderlineTextViewViewController.swift */; };
+		E5AFE4AD28597C1E00B460E8 /* UnderlineTextView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5AFE4AC28597C1E00B460E8 /* UnderlineTextView.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +82,8 @@
 		BFA650172225D3E600FF1FB0 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		BFD68C982220A412005CA182 /* KeyboardEvader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardEvader.swift; sourceTree = "<group>"; };
 		C40CD81EE62A049C59BA2C8B /* Pods-RAGTextField_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RAGTextField_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-RAGTextField_Example/Pods-RAGTextField_Example.release.xcconfig"; sourceTree = "<group>"; };
+		E5AFE4A828597BB200B460E8 /* UnderlineTextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineTextViewViewController.swift; sourceTree = "<group>"; };
+		E5AFE4AC28597C1E00B460E8 /* UnderlineTextView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UnderlineTextView.storyboard; sourceTree = "<group>"; };
 		FB0BEFBFFFA6FDCAE8495263 /* Pods-RAGTextField_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RAGTextField_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RAGTextField_Tests/Pods-RAGTextField_Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +214,8 @@
 				BF36005422286AD6002DD134 /* TextPaddingViewController.swift */,
 				BF36005A2229A566002DD134 /* Underline.storyboard */,
 				BF36005C2229A570002DD134 /* UnderlineViewController.swift */,
+				E5AFE4AC28597C1E00B460E8 /* UnderlineTextView.storyboard */,
+				E5AFE4A828597BB200B460E8 /* UnderlineTextViewViewController.swift */,
 			);
 			name = Pages;
 			sourceTree = "<group>";
@@ -330,6 +336,7 @@
 			files = (
 				BF36005322286AC9002DD134 /* TextPadding.storyboard in Resources */,
 				BF36005722289CA3002DD134 /* Outline.storyboard in Resources */,
+				E5AFE4AD28597C1E00B460E8 /* UnderlineTextView.storyboard in Resources */,
 				BFA6500F2225CD1A00FF1FB0 /* Placeholder.storyboard in Resources */,
 				BF360061222BD5B5002DD134 /* LeftAndRightViews.storyboard in Resources */,
 				BF36005B2229A566002DD134 /* Underline.storyboard in Resources */,
@@ -418,6 +425,7 @@
 				BF36005522286AD6002DD134 /* TextPaddingViewController.swift in Sources */,
 				BFA650182225D3E600FF1FB0 /* ColorPalette.swift in Sources */,
 				BF36005922289CAE002DD134 /* OutlineViewController.swift in Sources */,
+				E5AFE4AA28597BB200B460E8 /* UnderlineTextViewViewController.swift in Sources */,
 				BF09EC312227213D00D04024 /* HintViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

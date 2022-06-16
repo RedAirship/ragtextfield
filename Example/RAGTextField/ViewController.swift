@@ -11,6 +11,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         case outline
         case underline
         case leftAndRightViews
+        case underlineTextView
         
         static var allTopics: [Topic] {
             return [
@@ -20,7 +21,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 .textPadding,
                 .outline,
                 .underline,
-                .leftAndRightViews
+                .leftAndRightViews,
+                .underlineTextView
             ]
         }
     }
@@ -68,6 +70,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return "Underlined style"
         case .leftAndRightViews:
             return "Left and right views"
+        case .underlineTextView:
+            return "Underlined textview style"
         }
     }
     

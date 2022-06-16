@@ -192,7 +192,7 @@ open class RAGTextView: UITextView {
     private let placeholderConstraints = PlaceholderConstraints()
 
     /// The text value of the placeholder.
-    open var placeholder: String? {
+    @IBInspectable open var placeholder: String? {
         set {
             placeholderLabel.text = newValue
             placeholderView.invalidateIntrinsicContentSize()
@@ -310,6 +310,10 @@ open class RAGTextView: UITextView {
             view.isUserInteractionEnabled = false
             view.translatesAutoresizingMaskIntoConstraints = true
 
+            layer.cornerRadius = view.layer.cornerRadius
+            if #available(iOS 11.0, *) {
+                layer.maskedCorners = view.layer.maskedCorners
+            }
             addSubview(view)
             sendSubviewToBack(view)
 
@@ -321,7 +325,6 @@ open class RAGTextView: UITextView {
     ///
     /// - Returns: The frame
     private func computeTextBackgroundViewFrame() -> CGRect {
-
         let y, h: CGFloat
         switch textPaddingMode {
         case .text:
@@ -329,16 +332,16 @@ open class RAGTextView: UITextView {
             h = textPadding.top + measureTextHeight() + textPadding.bottom
         case .textAndPlaceholder:
             y = 0
-            h = computeTopInsetToText() + measureTextHeight() + textPadding.bottom
+            h = contentSize.height - computeTopInsetToText() + measureTextHeight() + textPadding.bottom
         case .textAndPlaceholderAndHint:
             y = 0
-            h = bounds.height
+            h = contentSize.height
         case .textAndHint:
             y = computeTopInsetToText() - textPadding.top
             h = textPadding.top + measureTextHeight() + computeBottomInsetToText()
         }
 
-        let frame = CGRect(x: 0, y: y, width: bounds.width, height: h)
+        let frame = CGRect(x: 0, y: y, width: contentSize.width, height: h)
 
         return frame
     }
@@ -485,19 +488,7 @@ open class RAGTextView: UITextView {
 
     private func isClearButtonVisible() -> Bool {
 
-        return true
-//        switch clearButtonMode {
-//        case .always:
-//            return true
-//        case .whileEditing:
-//            return isEditing && hasText
-//        case .unlessEditing:
-//            return !isEditing && hasText
-//        case .never:
-//            return false
-//        @unknown default:
-//            return false
-//        }
+        return false
     }
 
     // MARK: - Init
@@ -513,8 +504,9 @@ open class RAGTextView: UITextView {
     }
 
     private func commonInit() {
-
-//        borderStyle = .none
+        textContainer.lineFragmentPadding = 0
+        isScrollEnabled = false
+        bounces = false
 
         addSubview(hintLabel)
         setupHintLabel()
@@ -527,26 +519,13 @@ open class RAGTextView: UITextView {
 
         // Listen for text changes on self
         let action = #selector(textDidChange)
-        NotificationCenter.default.addObserver(self, selector: action, name: UITextField.textDidChangeNotification, object: self)
+        NotificationCenter.default.addObserver(self, selector: action, name: UITextView.textDidChangeNotification, object: self)
     }
 
     @objc private func textDidChange() {
         updatePlaceholderTransform(animated: true)
         updatePlaceholderColor()
-    }
-
-    open override func awakeFromNib() {
-        super.awakeFromNib()
-
-        // Copy the placeholder from the super class and set it nil
-//        if let superPlaceholder = super.placeholder {
-//            // Use the super placeholder only if the placeholder label has no text yet
-//            if placeholderLabel.text == nil {
-//                placeholder = superPlaceholder
-//            }
-//
-//            super.placeholder = nil
-//        }
+        adjustHeight()
     }
 
     /// Measures the height of the given text using the given font.
@@ -584,13 +563,13 @@ open class RAGTextView: UITextView {
         }
     }
 
-    private func hintFrame(forBounds bounds: CGRect) -> CGRect {
+    private func hintFrame() -> CGRect {
 
-        let w = bounds.width - textPadding.left - textPadding.right
+        let w = contentSize.width - textPadding.left - textPadding.right
         let h = measureHintSize(availableWidth: w).height
         let x = userInterfaceDirectionAwareTextPadding.left
 
-        var y = bounds.height - h
+        var y = contentSize.height - h
         if [.textAndHint, .textAndPlaceholderAndHint].contains(textPaddingMode) {
             y -= textPadding.bottom
         }
@@ -624,12 +603,10 @@ open class RAGTextView: UITextView {
 
         placeholderContainerView.backgroundColor = .clear
         placeholderContainerView.isUserInteractionEnabled = false
-        placeholderContainerView.translatesAutoresizingMaskIntoConstraints = false
+        placeholderContainerView.translatesAutoresizingMaskIntoConstraints = true
 
-        let views = ["v": placeholderContainerView]
-        let x = NSLayoutConstraint.constraints(withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: views)
-        let y = NSLayoutConstraint.constraints(withVisualFormat: "V:|[v]|", options: [], metrics: nil, views: views)
-        addConstraints(x + y)
+        let w = contentSize.width - textPadding.left - textPadding.right
+        placeholderContainerView.frame.size.width = w
     }
 
     /// Returns whether the placeholder should be displayed in the scaled
@@ -742,8 +719,7 @@ open class RAGTextView: UITextView {
         } else if isRightViewVisible && rightViewPosition == .left {
             inset = leftViewRect(forBounds: bounds).maxX + Constants.overlaySpaceToText
         } else if isClearButtonVisible() && clearButtonPosition == .left {
-            inset = 0.0
-//            inset = clearButtonRect(forBounds: bounds).maxX + Constants.overlaySpaceToText
+            inset = clearButtonRect(forBounds: bounds).maxX + Constants.overlaySpaceToText
         } else {
             inset = userInterfaceDirectionAwareTextPadding.left
         }
@@ -766,8 +742,7 @@ open class RAGTextView: UITextView {
         } else if isLeftViewVisible && leftViewPosition == .right {
             inset = bounds.width - rightViewRect(forBounds: bounds).minX + Constants.overlaySpaceToText
         } else if isClearButtonVisible() && clearButtonPosition == .right {
-            inset = 0.0
-//            inset = bounds.width - clearButtonRect(forBounds: bounds).minX + Constants.overlaySpaceToText
+            inset = bounds.width - clearButtonRect(forBounds: bounds).minX + Constants.overlaySpaceToText
         } else {
             inset = userInterfaceDirectionAwareTextPadding.right
         }
@@ -799,6 +774,10 @@ open class RAGTextView: UITextView {
         defer {
             updatePlaceholderTransform(animated: true)
             updatePlaceholderColor()
+
+            placeholderContainerView.translatesAutoresizingMaskIntoConstraints = true
+            placeholderContainerView.frame.size.height = measureTextHeight(using: placeholderLabel.font)
+            placeholderContainerView.backgroundColor = textBackgroundView?.backgroundColor
         }
 
         return super.becomeFirstResponder()
@@ -859,6 +838,25 @@ open class RAGTextView: UITextView {
         if color != placeholderLabel.textColor {
             placeholderLabel.textColor = color
         }
+    }
+
+    private func adjustHeight() {
+        guard numberOfLines() < 6 else {
+            isScrollEnabled = true
+            return
+        }
+        self.translatesAutoresizingMaskIntoConstraints = true
+        let size = sizeThatFits(CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude))
+        frame.size = CGSize(width: max(size.width, bounds.width), height: size.height)
+        isScrollEnabled = false
+        placeholderContainerView.frame.origin.y = 0.0
+    }
+
+    private func numberOfLines() -> Int {
+        guard let font = font else {
+            return 0
+        }
+        return Int(contentSize.height / font.lineHeight)
     }
 
     private func animatePlaceholder(scaled: Bool, duration: TimeInterval) {
@@ -936,7 +934,13 @@ open class RAGTextView: UITextView {
 
         // Update the frame of the hint
         if !hintLabel.isHidden {
-            hintLabel.frame = hintFrame(forBounds: bounds)
+            hintLabel.frame = hintFrame()
+        }
+
+        textContainerInset = UIEdgeInsets(top: computeTopInsetToText(), left: computeLeftInsetToText(), bottom: computeBottomInsetToText(), right: computeRightInsetToText())
+
+        if isScrollEnabled {
+            placeholderContainerView.frame.origin.y = contentOffset.y
         }
     }
 
@@ -1046,7 +1050,7 @@ open class RAGTextView: UITextView {
 
         let additionalTopInset = [.textAndPlaceholder, .textAndPlaceholderAndHint].contains(textPaddingMode) ? textPadding.top : 0.0
         let scaledHeight = placeholderScaleWhenEditing * measureTextHeight(using: placeholderLabel.font)
-        return computeTopInsetToText() - textPadding.top - scaledPlaceholderOffset - 0.5 * scaledHeight + additionalTopInset
+        return computeTopInsetToText() - textPadding.top - scaledPlaceholderOffset - 0.75 * scaledHeight + additionalTopInset
     }
 }
 
