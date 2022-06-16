@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftTheme
 
 private enum Constants {
 
@@ -174,7 +175,7 @@ open class RAGTextView: UITextView {
     /// Contains the placeholder view.
     ///
     /// Required so that when the placeholder view constraints are animated, the cursor of the text field is not animated as well.
-    private let placeholderContainerView = UIView()
+    open var placeholderContainerView = UIView()
 
     /// Contains the placeholder label.
     ///
@@ -601,12 +602,9 @@ open class RAGTextView: UITextView {
 
     private func setupPlaceholderContainerView() {
 
-        placeholderContainerView.backgroundColor = .clear
         placeholderContainerView.isUserInteractionEnabled = false
         placeholderContainerView.translatesAutoresizingMaskIntoConstraints = true
-
-        let w = contentSize.width - textPadding.left - textPadding.right
-        placeholderContainerView.frame.size.width = w
+        placeholderContainerView.theme_backgroundColor = ThemeColors.themeBackgroundSurface1
     }
 
     /// Returns whether the placeholder should be displayed in the scaled
@@ -775,9 +773,8 @@ open class RAGTextView: UITextView {
             updatePlaceholderTransform(animated: true)
             updatePlaceholderColor()
 
-            placeholderContainerView.translatesAutoresizingMaskIntoConstraints = true
-            placeholderContainerView.frame.size.height = measureTextHeight(using: placeholderLabel.font)
-            placeholderContainerView.backgroundColor = textBackgroundView?.backgroundColor
+            let h = measureTextHeight(using: placeholderLabel.font)
+            placeholderContainerView.frame.size = .init(width: bounds.width, height: h)
         }
 
         return super.becomeFirstResponder()
